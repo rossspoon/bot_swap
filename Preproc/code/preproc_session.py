@@ -9,13 +9,15 @@ TEMP_DIR = 'Preproc/temp'
 sess_data = pd.read_csv(f'{TEMP_DIR}/normalized_session.csv').set_index('session')
 group_data = pd.read_csv(f'{TEMP_DIR}/normalized_group.csv')
 player_data = pd.read_csv(f'{TEMP_DIR}/normalized_player.csv')
+models = pd.read_csv("Raw_Data/session_model_identifiers/mixed_subject_level_identifiers/uo4ihlcd.metadata",
+                          delimiter='|', names=['session', 'model']).set_index('session')
 
 n = player_data.groupby(['session', 'round']).id_in_group.count().groupby('session').max()
 n.name = 'n'
 flt = group_data.groupby(['session'])['float'].max()
 flt.name = 'flt'
 
-sess_data = sess_data.join(n).join(flt)
+sess_data = sess_data.join(n).join(flt).join(models)
 
 
 print("\n#########")

@@ -8,6 +8,7 @@ TEMP_DIR = 'Preproc/temp'
 
 def get_df(base):
     paths =  Path(DATA_DIR).rglob(f'*/{base}*.csv')
+
     dfs =  [pd.read_csv(p) for p in paths]
     concat = pd.concat(dfs)
     return concat
@@ -45,9 +46,28 @@ def get_variables(start, df, include_rounds=False, include_participant=False):
 print("Normalizing")
 
 # Rounds Data
+print("... Reading Round Data")
 rounds_data = get_df('rounds')
 rounds_data = remove_non_part(rounds_data)
 rounds_data.rename(mapper=common_map, axis=1, inplace=True)
+
+# Remove risk columns
+risk_cols = ['player.risk',
+'player.risk_1',
+'player.risk_2',
+'player.risk_3',
+'player.risk_4',
+'player.risk_rh',
+'player.risk_rl',
+'player.risk_sh',
+'player.risk_sl',
+'player.risk_phi_1',
+'player.risk_phi_2',
+'player.risk_phi_3',
+'player.risk_phi_4',
+'player.risk_reward',]
+for c in risk_cols:
+    rounds_data[c] = ' '
 
 # Generate a map of session to date to augment participant labels
 sess_map = rounds_data[['session','session.label']].drop_duplicates().set_index('session')

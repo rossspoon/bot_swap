@@ -118,6 +118,7 @@ def get_order_book_pressure(x):
     price = x.price.values[0]
     
     try:
+        od.sort_index(inplace=True)
         bids = od.loc[(s, r, 'BUY')]
     except KeyError:
         bids = None
