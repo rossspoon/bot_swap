@@ -131,4 +131,8 @@ sess_data = sess_data.join(max_round)
 sess_data.drop('comment', axis='columns', inplace=True)
 
 
+#Purge sessions that don't have meta data
+sess_data.dropna(subset='model', axis='index', inplace=True)
+
+
 sess_data.to_csv(f'{TEMP_DIR}/preproc_session.csv')
