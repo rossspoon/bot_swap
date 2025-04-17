@@ -24,6 +24,9 @@ a = group_data.join(sess_data, on='session')
 a = a.join(part_data, on='session')
 flat = a.join(player_data[player_columns], on=['part_label', 'round'])
 
+#Purge sessions that don't have meta data
+flat.dropna(subset='model', axis='index', inplace=True)
+
 
 
 #write to disk
