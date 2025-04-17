@@ -6,18 +6,28 @@ print("## Preproc Session")
 
 
 TEMP_DIR = 'Preproc/temp'
-sess_data = pd.read_csv(f'{TEMP_DIR}/normalized_session.csv').set_index('session')
+sess_data_raw = pd.read_csv(f'{TEMP_DIR}/normalized_session.csv').set_index('session')
 group_data = pd.read_csv(f'{TEMP_DIR}/normalized_group.csv')
 player_data = pd.read_csv(f'{TEMP_DIR}/normalized_player.csv')
-models = pd.read_csv("Raw_Data/session_model_identifiers/mixed_subject_level_identifiers/uo4ihlcd.metadata",
-                          delimiter='|', names=['session', 'model']).set_index('session')
+
+
+meta_1 = pd.read_csv("Raw_Data/session_model_identifiers/uo4ihlcd.metadata",
+                          delimiter='|', names=['session', 'model'])
+#Get Meta-Data
+meta_cols = ['time_stamp', 'run', 'model', 'N', 'note', 'session']
+meta_2 = pd.read_csv("Raw_Data/session_model_identifiers/runs.metadata",
+                          delimiter='|', names=meta_cols)
+meta_2.drop('N', axis='columns', inplace=True)
+models = pd.concat([meta_1, meta_2])
+models['session'] = models.session.str.strip()
+models.set_index('session', inplace=True)
 
 n = player_data.groupby(['session', 'round']).id_in_group.count().groupby('session').max()
 n.name = 'n'
 flt = group_data.groupby(['session'])['float'].max()
 flt.name = 'flt'
 
-sess_data = sess_data.join(n).join(flt).join(models)
+sess_data = sess_data_raw.join(n).join(flt).join(models)
 
 
 print("\n#########")

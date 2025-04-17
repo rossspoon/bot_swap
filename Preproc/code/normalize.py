@@ -52,22 +52,7 @@ rounds_data = remove_non_part(rounds_data)
 rounds_data.rename(mapper=common_map, axis=1, inplace=True)
 
 # Remove risk columns
-risk_cols = ['player.risk',
-'player.risk_1',
-'player.risk_2',
-'player.risk_3',
-'player.risk_4',
-'player.risk_rh',
-'player.risk_rl',
-'player.risk_sh',
-'player.risk_sl',
-'player.risk_phi_1',
-'player.risk_phi_2',
-'player.risk_phi_3',
-'player.risk_phi_4',
-'player.risk_reward',]
-for c in risk_cols:
-    rounds_data[c] = ' '
+rounds_data['player.risk_reward'] = ' '
 
 # Generate a map of session to date to augment participant labels
 sess_map = rounds_data[['session','session.label']].drop_duplicates().set_index('session')
